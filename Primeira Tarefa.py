@@ -1,27 +1,29 @@
 #!/usr/bin/env python3
-import numpy as np    
+import numpy as np   
+import math 
 
 def main():
     escolhido = False
+    
     while (escolhido == False):
         alternative = input("Type an alternative (a,b ou c):")
         if(alternative.lower() == "a"):      
             escolhido = True
             letra_a()
 
-        elif(alternative.lower() == "b"):
-            escolhido = True
-            letra_b()
+        # elif(alternative.lower() == "b"):
+        #     escolhido = True
+        #     letra_b()
 
-        elif(alternative.lower() == "c"):
-            escolhido = True
-            letra_c()
+        # elif(alternative.lower() == "c"):
+        #     escolhido = True
+        #     letra_c()
 
         else:
             print(" You did not type an existing alternative! ")
 
 
-def heat_equation(u0, T, _f, lamb):
+def heat_equation(u0, T, N, _f, lamb):
     """
     Fórmula de diferenças finitas:
         N: int (input)
@@ -40,38 +42,58 @@ def heat_equation(u0, T, _f, lamb):
         A variável u(t, x) descreve a temperatura no instante t na posi¸c˜ao x, sendo a distribuição inicial u0(x) dada
     """
     
-    try:
-        N = int(input("Type N: "))
-    except:
-        print("Wrong type! N must be integers!")
-        N = int(input("Type N: "))
+    print('-'*15+'Heat Equation in progress'+'-'*15+'\n')
     
-    delta_x = 1/N
-    M = T*np.exp2(N)/lamb
+    dx = 1/N
+    M = int(T*np.power(N, 2)/lamb)
+    dt = T/M    
     
+    u_old = [u0 for i in range(N+1)] 
     
-    u_list = []
-    """ 
-    u_list = [
-            [42,7,1287,325],
-            [42,7,4,542],
-            [42,7,981,325],
-            [42,7,134,325]
-            ]
-    """
+    u_new = []
+    
+    for k in range(0, M):
+        # adicionar u(k+1,0) na u_new
+        u_new.append(0)
+        for i in range(1, N):
+            u_new.append( u_old[i] + dt * ((u_old[i-1] - 2*u_old[i] + u_old[i+1]) / np.exp2(dx) + _f(k*dt,i*dx)))
+        
+        # adicionar u(k+1,N) na u_new
+        u_new.append(0)
+        u_old = u_new.copy()
+        u_new = []        
+    
+    print('-'*15+'Heat Equation done'+'-'*15+'\n')
+    return u_old
+    
+def plot(us):
+    import matplotlib.pyplot as plt
+    
+    fig = plt.figure()
+    
+    ax_lamb1 = fig.add_subplot(4, 4, 1)
+    ax_lamb2 = fig.add_subplot(4, 4, 2)
+    ax_lamb3 = fig.add_subplot(4, 4, 3)
+    
+    ax_lamb1.scatter([i for i in range(0, len(us[0]))], us[0])
+    ax_lamb2.scatter([i for i in range(0, len(us[0]))], us[1])
+    ax_lamb3.scatter([i for i in range(0, len(us[0]))], us[2])
 
-    for i in range(1, N, 1):
-        u_list.append([])
-        for k in range(0, M, 1):
-
-            u_nextk_i = u_k_i + delta_t * ((u_k_lasti - 2*u_k_i + u_k_next_i) / np.exp2(delta_x) + _f(k*delta_t,i*delta_x))
-
+    #save image as png
+    fig.savefig("figura.png", dpi=1080)
 
 def letra_a():
     T = 1
     lamb_list = [0.25 , 0.5 , 0.51]
     #u(0, x) = u0(x) em [0, 1]
     u0 = 0
+
+    try:
+        N = int(input("Type N: "))
+    except:
+        print("Wrong type! N must be an integer!")
+        N = int(input("Type N: "))
+
 
     def _f(t, x):
         return 10*(np.exp2(x))*(x - 1) - 60*x*t + 20*t 
@@ -80,11 +102,13 @@ def letra_a():
     def _u(t, x):
         return 10*t*(np.exp2(x))*(x - 1)
 
+    us = []
+    
     for lamb in lamb_list:
-        heat_equation(u0, T, _f, lamb)
+        u_old = heat_equation(u0, T, N, _f, lamb)
+        us.append(u_old)
+        
+    plot(us)
 
 
-
-
-
-
+main()
