@@ -72,7 +72,7 @@ def heat_equation(u0, T, N, _f, lamb, g1, g2):
     print('-'*15+'Heat Equation done'+'-'*15+'\n')
     return u_old
     
-def plot(us):
+def plot(us, _u):
     import matplotlib.pyplot as plt
     
     fig = plt.figure()
@@ -87,10 +87,20 @@ def plot(us):
     
     def dot_size(n_dots):
         return [1 for i in range(n_dots)]
+
+    x_us = np.arange(0,1.0000000000001,1/(len(us[0])-1))
+
+    x_utarget = np.arange(0,1,0.001)
+    y_target = np.array([_u(x_utarget[i]) for i in range(len(x_utarget))])
     
-    ax_lamb1.scatter([i for i in range(0, len(us[0]))], us[0], dot_size(len(us[0])))
-    ax_lamb2.scatter([i for i in range(0, len(us[0]))], us[1], dot_size(len(us[0])))
-    ax_lamb3.scatter([i for i in range(0, len(us[0]))], us[2], dot_size(len(us[0])))
+    ax_lamb1.scatter(x_us, us[0], dot_size(len(us[0])))
+    ax_lamb1.plot(x_utarget, y_target, 'ro', alpha = 0.4, linewidth=0.001)
+
+    ax_lamb2.scatter(x_us, us[1], dot_size(len(us[0])))
+    ax_lamb2.plot(x_utarget, y_target, 'ro', alpha = 0.1, linewidth=2)
+
+    ax_lamb3.scatter(x_us, us[2], dot_size(len(us[0])))
+    ax_lamb3.plot(x_utarget, y_target, 'ro', alpha = 0.9, linewidth=5)
 
     #save image as png
     fig.savefig("figura.png", dpi=300)
@@ -116,8 +126,8 @@ def letra_a():
         return 10*(np.power(x, 2))*(x - 1) - 60*x*t + 20*t 
     
     #solucao exata que precisamos nos aproximar:
-    def _u(t, x):
-        return 10*t*(np.power(x, 2))*(x - 1)
+    def _u(x):
+        return 10*T*(np.power(x, 2))*(x - 1)
 
     us = []
     
@@ -125,7 +135,7 @@ def letra_a():
         u_old = heat_equation(u0, T, N, _f, lamb, g1, g2)
         us.append(u_old)
         
-    plot(us)
+    plot(us, _u)
 
 
 main()
