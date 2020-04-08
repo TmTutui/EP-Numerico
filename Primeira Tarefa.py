@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import numpy as np   
 import math 
+from tqdm import tqdm
 
 def main():
     escolhido = False
@@ -48,19 +49,22 @@ def heat_equation(u0, T, N, _f, lamb, g1, g2):
     M = int(T*np.power(N, 2)/lamb)
     dt = T/M    
     
-    u_old = [u0 for i in range(N+1)] 
+    u_old = np.array([u0 for i in range(N+1)])
+    type(u_old)
     
-    u_new = []
+    u_new = np.array([])
 
     
-    for k in range(0, M):
+    for k in tqdm(range(1, M)):
         # adicionar u(k+1,0) na u_new
-        u_new.append(g1)
+        u_new = np.append(u_new, g1)
+
         for i in range(1, N):
-            u_new.append( u_old[i] + dt * ((u_old[i-1] - 2*u_old[i] + u_old[i+1]) / np.exp2(dx) + _f(k*dt,i*dx)))
+            u_new = np.append(u_new, u_old[i] + dt * ((u_old[i-1] - 2*u_old[i] + u_old[i+1]) / np.exp2(dx) + _f(k*dt,i*dx)))
         
         # adicionar u(k+1,N) na u_new
-        u_new.append(g2)
+        u_new = np.append(u_new, g2)
+
         u_old = u_new.copy()
         u_new = []        
 
