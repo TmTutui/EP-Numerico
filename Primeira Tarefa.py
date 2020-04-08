@@ -77,11 +77,11 @@ def plot(us, _u):
     import matplotlib as mpl
     mpl.rcParams['lines.linewidth'] = 0.1
     
-    fig = plt.figure()
+    fig, axs = plt.subplots(3)
+    fig.suptitle('Plot para N = ' + str(len(us[0])-1))
+    plt.subplots_adjust(hspace = 0.4)
     
-    ax_lamb1 = fig.add_subplot(4, 4, 1)
-    ax_lamb2 = fig.add_subplot(4, 4, 2)
-    ax_lamb3 = fig.add_subplot(4, 4, 3)
+    xticks = np.arange(0,1.0000000000001,0.1)
 
     print(us[0])
     print(us[1])
@@ -100,14 +100,40 @@ def plot(us, _u):
     target_dots = [0.1 for i in range(len(y_target))] #list of dot sizes
 
     
-    ax_lamb1.scatter(x_us, us[0], s=us_dots)
-    ax_lamb1.scatter(x_utarget, y_target, s=target_dots, alpha=0.1)
+    axs[0].scatter(x_us, us[0], s=us_dots)
+    axs[0].scatter(x_utarget, y_target, s=target_dots, alpha=0.1)
+    axs[0].set_title("Lambda = 0.25", 
+                        fontdict={
+                            'fontsize': 8,
+                            'fontweight' : 0.3,
+                        },
+                        loc = 'left',
+                    )
 
-    ax_lamb2.scatter(x_us, us[1], s=us_dots)
-    ax_lamb2.scatter(x_utarget, y_target, s=target_dots, alpha=0.1)
+    axs[1].scatter(x_us, us[1], s=us_dots)
+    axs[1].scatter(x_utarget, y_target, s=target_dots, alpha=0.1)
+    axs[1].set_title("Lambda = 0.50", 
+                        fontdict={
+                            'fontsize': 8,
+                            'fontweight' : 0.3,
+                        },
+                        loc = 'left',
+                    )
 
-    ax_lamb3.scatter(x_us, us[2], s=us_dots)
-    ax_lamb3.scatter(x_utarget, y_target, s=target_dots, alpha=0.1)
+    axs[2].scatter(x_us, us[2], s=us_dots)
+    axs[2].scatter(x_utarget, y_target, s=target_dots, alpha=0.1)
+    axs[2].set_title("Lambda = 0.51", 
+                        fontdict={
+                            'fontsize': 8,
+                            'fontweight' : 0.3,
+                        },
+                        loc = 'left',
+                    )
+
+    for ax in fig.get_axes():
+        ax.label_outer()
+
+
 
     #save image as png
     fig.savefig("figura.png", dpi=300)
