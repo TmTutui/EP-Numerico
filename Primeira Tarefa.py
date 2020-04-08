@@ -136,7 +136,8 @@ def plot(us, _u):
 
 
     #save image as png
-    fig.savefig("figura.png", dpi=300)
+    fig_name = "figure of n = {}.png".format(len(us[0])-1)
+    fig.savefig(fig_name, dpi=300)
 
 def letra_a():
     T = 1
