@@ -129,10 +129,6 @@ def plot(us, _u):
     for ax in fig.get_axes():
         ax.label_outer()
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 765407a853b68cad72bf04749cac3f86bc9164df
     #save image as png
     fig.savefig("figure of n = {}.png".format(len(us[0])-1), dpi=300)
 
