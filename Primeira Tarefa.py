@@ -74,33 +74,40 @@ def heat_equation(u0, T, N, _f, lamb, g1, g2):
     
 def plot(us, _u):
     import matplotlib.pyplot as plt
+    import matplotlib as mpl
+    mpl.rcParams['lines.linewidth'] = 0.1
     
     fig = plt.figure()
     
     ax_lamb1 = fig.add_subplot(4, 4, 1)
     ax_lamb2 = fig.add_subplot(4, 4, 2)
     ax_lamb3 = fig.add_subplot(4, 4, 3)
-    
+
     print(us[0])
     print(us[1])
     print(us[2]) 
     
-    def dot_size(n_dots):
+    def dot_size_us(n_dots):
         return [1 for i in range(n_dots)]
 
-    x_us = np.arange(0,1.0000000000001,1/(len(us[0])-1))
 
+    x_us = np.arange(0,1.0000000000001,1/(len(us[0])-1))
+    us_dots = [2 for i in range(len(us[0]))] #list of dot sizes
+
+    #Valores da solucao exata
     x_utarget = np.arange(0,1,0.001)
     y_target = np.array([_u(x_utarget[i]) for i in range(len(x_utarget))])
+    target_dots = [0.1 for i in range(len(y_target))] #list of dot sizes
+
     
-    ax_lamb1.scatter(x_us, us[0], dot_size(len(us[0])))
-    ax_lamb1.plot(x_utarget, y_target, 'ro', alpha = 0.4, linewidth=0.001)
+    ax_lamb1.scatter(x_us, us[0], s=us_dots)
+    ax_lamb1.scatter(x_utarget, y_target, s=target_dots, alpha=0.1)
 
-    ax_lamb2.scatter(x_us, us[1], dot_size(len(us[0])))
-    ax_lamb2.plot(x_utarget, y_target, 'ro', alpha = 0.1, linewidth=2)
+    ax_lamb2.scatter(x_us, us[1], s=us_dots)
+    ax_lamb2.scatter(x_utarget, y_target, s=target_dots, alpha=0.1)
 
-    ax_lamb3.scatter(x_us, us[2], dot_size(len(us[0])))
-    ax_lamb3.plot(x_utarget, y_target, 'ro', alpha = 0.9, linewidth=5)
+    ax_lamb3.scatter(x_us, us[2], s=us_dots)
+    ax_lamb3.scatter(x_utarget, y_target, s=target_dots, alpha=0.1)
 
     #save image as png
     fig.savefig("figura.png", dpi=300)
