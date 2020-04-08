@@ -79,7 +79,7 @@ def plot(us, _u):
     
     fig, axs = plt.subplots(3)
     fig.suptitle('Plot para N = ' + str(len(us[0])-1))
-    plt.subplots_adjust(hspace = 0.4)
+    plt.subplots_adjust(hspace = 0.4) #height space between subplots
     
     xticks = np.arange(0,1.0000000000001,0.1)
 
@@ -130,9 +130,9 @@ def plot(us, _u):
                         loc = 'left',
                     )
 
+    #use same x label for every subplot
     for ax in fig.get_axes():
         ax.label_outer()
-
 
 
     #save image as png
