@@ -12,9 +12,9 @@ def main():
             escolhido = True
             letra_a()
 
-        # elif(alternative.lower() == "b"):
-        #     escolhido = True
-        #     letra_b()
+        elif(alternative.lower() == "b"):
+            escolhido = True
+            letra_b()
 
         # elif(alternative.lower() == "c"):
         #     escolhido = True
@@ -59,13 +59,13 @@ def heat_equation(u0, T, N, _f, lamb, g1, g2, _u):
     
     for k in tqdm(range(1, M)):
         # adicionar u(k+1,0) na u_new
-        u_new = np.append(u_new, g1)
+        u_new = np.append(u_new, g1(k))
 
         for i in range(1, N):
             u_new = np.append(u_new, u_old[i] + dt * ((u_old[i-1] - 2*u_old[i] + u_old[i+1]) / np.power(dx, 2) + _f(k*dt,i*dx)))
         
         # adicionar u(k+1,N) na u_new
-        u_new = np.append(u_new, g2)
+        u_new = np.append(u_new, g2(k))
         
         u_old = u_new.copy()
         u_new = []
@@ -138,13 +138,20 @@ def plot(us, _u):
 def letra_a():
     T = 1
     lamb_list = [0.25 , 0.5 , 0.51]
+    
     # u(0, x) = u0(x) em [0, 1]
-    u0 = 0
+    def u0():
+        return 0
 
     # condiçõees de fronteira nulas
-    g1 = 0
-    g2 = 0
-
+    def _g1(t):
+        t = 0
+        return t
+    
+    def _g2(t):
+        t = 0
+        return t
+    
     try:
         N = int(input("Type N: "))
     except:
@@ -158,22 +165,11 @@ def letra_a():
     def _u(x):
         return 10*T*(np.power(x, 2))*(x - 1)        
     
-    # def erro(value, target):
-    #     """
-    #         Function to calculate the mistake.
-    #         value: numpy array
-    #         target: numpy array
-    #         i: integer - 
-    #     """
-    #     type(abs(target-value))
-    #     import pdb; pdb.set_trace()
-    #     return abs(target-value)
-        
     us = []
     erros = []
     
     for lamb in lamb_list:
-        u_old, erro = heat_equation(u0, T, N, _f, lamb, g1, g2, _u)
+        u_old, erro = heat_equation(u0, T, N, _f, lamb, _g1, _g2, _u)
         us.append(u_old)
         
         erros.append(erro)
@@ -183,5 +179,40 @@ def letra_a():
     
 def letra_b():
     
+    def _u0(x):
+        return np.exp(-x)
+    
+    def _g1(t):
+        return np.exp(t)
+    
+    def _g2(t):
+        return np.exp(t-1)*np.cos(5*t)
+    
+    def _f(t, x):
+        return ut - uxx
+        
+    T = 1
+    lamb_list = [0.25 , 0.5 , 0.51]
+    
+    try:
+        N = int(input("Type N: "))
+    except:
+        print("Wrong type! N must be an integer!")
+        N = int(input("Type N: "))
+        
+    def _u(x):
+        return (-x)*np.exp(T-x)*np.cos(5*T*x)    
+
+    us = []
+    erros = []
+    
+    for lamb in lamb_list:
+        u_old, erro = heat_equation(_u0, T, N, _f, lamb, _g1, _g2, _u)
+        us.append(u_old)
+        
+        erros.append(erro)
+        
+    print('\n\n', erros, '\n\n')    
+    plot(us, _u)
 
 main()
