@@ -1,6 +1,3 @@
-- [x] Fix erro bug;
-- [x] Diff u;
-- [x] TypeError: unsupported operand type(s) for *: 'int' and 'function' - item a;
 - [ ] Requiremetns.txt;
 - [ ] Readme.md;
 - [ ] Docs;
