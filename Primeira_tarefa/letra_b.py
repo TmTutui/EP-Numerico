@@ -75,6 +75,7 @@ def plot(us, _u, erro):
     import matplotlib as mpl
     mpl.rcParams['lines.linewidth'] = 0.1
     
+    
     fig, axs = plt.subplots(3)
     fig.suptitle('Plot para N = ' + str(len(us[0])-1))
     plt.subplots_adjust(hspace = 0.4) # height space between subplots
