@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
+import time
+start_time = time.time()
 import numpy as np   
 from tqdm import tqdm
 import warnings
 warnings.filterwarnings("ignore")
 
+
 def heat_equation(u0, T, N, _f, lamb, g1, g2, _u):
     """
-    Fórmula de diferenças finitas:
+    Heat Equation:
+        u0: uo(x) - math function
         N: int (input)
         M: int (input)
         T: float
@@ -15,10 +19,12 @@ def heat_equation(u0, T, N, _f, lamb, g1, g2, _u):
         f: math function - f(t,x)
         u: Heat Equation - u(t, x)
         xi = i∆x, i = 0, · · · , N, com ∆x = 1/N. Para a discretização temporal definimos ∆t = T /M, e
-        calculamos aproximações nos instantes tk = k∆t, k = 1, · · · , M. Denotamos a aproximação para a
-        solução nos pontos de malha u(tk, xi) por u_k_i.
-        
+        calculamos aproximações nos instantes tk = k∆t, k = 1, · · · , M. 
         A variável u(t, x) descreve a temperatura no instante t na posição x, sendo a distribuição inicial u0(x) dada
+
+    return: 
+        u_old: array
+        erro: list
     """
     
     print('-'*15+'Heat Equation in progress'+'-'*15+'\n')
@@ -58,6 +64,14 @@ def heat_equation(u0, T, N, _f, lamb, g1, g2, _u):
     return u_old, erro
 
 def plot(us, _u, erro):
+    """
+    Plot a graph using matplotlib
+        us: array with heat_equation values (n=3)
+        _u: array - y_utarget
+        erro: list of floats
+
+    Save figures at figuras_b
+    """
     import matplotlib.pyplot as plt
     import matplotlib as mpl
     mpl.rcParams['lines.linewidth'] = 0.1
@@ -116,16 +130,21 @@ def plot(us, _u, erro):
         fig.savefig(r"Primeira_tarefa/figuras_b/Figure of n = {}.png".format(len(us[0])-1), dpi=300)
 
 def main():
+    
     def _u0(x):
+        "Distribuição inicial."
         return np.exp(-x)
     
     def _g1(t):
+        "Condição de fronteira."
         return np.exp(t)
     
     def _g2(t):
+        "Condição de fronteira."
         return np.exp(t-1)*np.cos(5*t)
     
     def _f(t, x):
+        "Descrição da fonte de calor ao longo do tempo"
         return np.exp(t-x)*5*(5*np.power(t,2)*np.cos(5*t*x) - (x + 2*t)*np.sin(5*t*x))
         
     T = 1
@@ -138,6 +157,7 @@ def main():
         N = int(input("Type N: "))
         
     def _u(x):
+        "Target solution."
         return np.exp(T-x)*np.cos(5*T*x)    
 
     us = []
@@ -151,5 +171,6 @@ def main():
         
     print('Erro: \n\n', erros, '\n\n')    
     plot(us, _u, erros)
+    print("--- %s seconds ---"%round(time.time() - start_time, 4))
 
 main()

@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+import time
+start_time = time.time()
 import numpy as np   
 from tqdm import tqdm
 import warnings
@@ -6,7 +8,8 @@ warnings.filterwarnings("ignore")
     
 def heat_equation(u0, T, N, _f, lamb, g1, g2, _u):
     """
-    Fórmula de diferenças finitas:
+    Heat Equation:
+        u0: uo(x) - math function
         N: int (input)
         M: int (input)
         T: float
@@ -14,11 +17,13 @@ def heat_equation(u0, T, N, _f, lamb, g1, g2, _u):
         k = 0, ..., M-1
         f: math function - f(t,x)
         u: Heat Equation - u(t, x)
-        xi = i∆x, i = 0, · · · , N, com ∆x = 1/N. Para a discretiza¸c˜ao temporal definimos ∆t = T /M, e
-        calculamos aproxima¸c˜oes nos instantes tk = k∆t, k = 1, · · · , M. Denotamos a aproxima¸c˜ao para a
-        solu¸c˜ao nos pontos de malha u(tk, xi) por u_k_i.
-        
+        xi = i∆x, i = 0, · · · , N, com ∆x = 1/N. Para a discretização temporal definimos ∆t = T /M, e
+        calculamos aproximações nos instantes tk = k∆t, k = 1, · · · , M. 
         A variável u(t, x) descreve a temperatura no instante t na posição x, sendo a distribuição inicial u0(x) dada
+
+    return: 
+        u_old: array
+        erro: list
     """
     
     print('-'*15+'Heat Equation in progress'+'-'*15+'\n')
@@ -55,6 +60,14 @@ def heat_equation(u0, T, N, _f, lamb, g1, g2, _u):
     return u_old, erro
     
 def plot(us, _u, erro):
+    """
+    Plot a graph using matplotlib
+        us: array with heat_equation values (n=3)
+        _u: array - y_utarget
+        erro: list of floats
+
+    Save figures at figuras_a
+    """ 
     import matplotlib.pyplot as plt
     import matplotlib as mpl
     mpl.rcParams['lines.linewidth'] = 0.1
@@ -130,10 +143,12 @@ def main():
         N = int(input("Type N: "))
 
     def _f(t, x):
+        "Descrição da fonte de calor ao longo do tempo"
         return 10*(np.power(x, 2))*(x - 1) - 60*x*t + 20*t 
     
     #solucao exata que precisamos nos aproximar:
     def _u(x):
+        "Target solution"
         return 10*T*(np.power(x, 2))*(x - 1)        
     
     us = []
@@ -146,5 +161,6 @@ def main():
         erros.append(erro)
     
     plot(us, _u, erros)
+    print("--- %s seconds ---"%round(time.time() - start_time, 4))
 
 main()
