@@ -126,7 +126,7 @@ def main():
         return np.exp(t-1)*np.cos(5*t)
     
     def _f(t, x):
-        return np.exp(t-x)*np.cos(5*t*x) - np.exp(t-x)*(10*t*np.sin(5*t*x) + (1-25*np.power(t,2))*np.cos(5*t*x))
+        return np.exp(t-x)*5*(5*np.power(t,2)*np.cos(5*t*x) - (x + 2*t)*np.sin(5*t*x))
         
     T = 1
     lamb_list = [0.25 , 0.5 , 0.51]
