@@ -6,7 +6,6 @@ from tqdm import tqdm
 import warnings
 warnings.filterwarnings("ignore")
 
-
 def heat_equation(u0, T, N, _f, lamb, g1, g2, _u):
     """
     Heat Equation:
@@ -136,11 +135,11 @@ def main():
         return np.exp(-x)
     
     def _g1(t):
-        "Condição de fronteira."
+        "Condição de fronteira x = 0."
         return np.exp(t)
     
     def _g2(t):
-        "Condição de fronteira."
+        "Condição de fronteira x = 1."
         return np.exp(t-1)*np.cos(5*t)
     
     def _f(t, x):

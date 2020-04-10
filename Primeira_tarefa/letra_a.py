@@ -132,7 +132,7 @@ def main():
     # u(0, x) = u0(x) em [0, 1]
     u0 = 0
 
-    # condiçõees de fronteira nulas
+    # condições de fronteira nulas
     g1 = 0
     g2 = 0
     
