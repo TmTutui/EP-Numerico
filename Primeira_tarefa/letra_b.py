@@ -1,28 +1,8 @@
 #!/usr/bin/env python3
 import numpy as np   
-import math 
 from tqdm import tqdm
-
-def main():
-    escolhido = False
-    
-    while (escolhido == False):
-        alternative = input("Type an alternative (a,b ou c):")
-        if(alternative.lower() == "a"):      
-            escolhido = True
-            letra_a()
-
-        elif(alternative.lower() == "b"):
-            escolhido = True
-            letra_b()
-
-        # elif(alternative.lower() == "c"):
-        #     escolhido = True
-        #     letra_c()
-
-        else:
-            print(" You did not type an existing alternative! ")
-
+import warnings
+warnings.filterwarnings("ignore")
 
 def heat_equation(u0, T, N, _f, lamb, g1, g2, _u):
     """
@@ -34,11 +14,11 @@ def heat_equation(u0, T, N, _f, lamb, g1, g2, _u):
         k = 0, ..., M-1
         f: math function - f(t,x)
         u: Heat Equation - u(t, x)
-        xi = i∆x, i = 0, · · · , N, com ∆x = 1/N. Para a discretiza¸c˜ao temporal definimos ∆t = T /M, e
-        calculamos aproxima¸c˜oes nos instantes tk = k∆t, k = 1, · · · , M. Denotamos a aproxima¸c˜ao para a
-        solu¸c˜ao nos pontos de malha u(tk, xi) por u_k_i.
+        xi = i∆x, i = 0, · · · , N, com ∆x = 1/N. Para a discretização temporal definimos ∆t = T /M, e
+        calculamos aproximações nos instantes tk = k∆t, k = 1, · · · , M. Denotamos a aproximação para a
+        solução nos pontos de malha u(tk, xi) por u_k_i.
         
-        A variável u(t, x) descreve a temperatura no instante t na posi¸c˜ao x, sendo a distribuição inicial u0(x) dada
+        A variável u(t, x) descreve a temperatura no instante t na posição x, sendo a distribuição inicial u0(x) dada
     """
     
     print('-'*15+'Heat Equation in progress'+'-'*15+'\n')
@@ -47,36 +27,37 @@ def heat_equation(u0, T, N, _f, lamb, g1, g2, _u):
     M = int(T*np.power(N, 2)/lamb)
     dt = T/M    
     
-    u_old = np.array([u0 for i in range(N+1)])
-    type(u_old)
-    
+    # used in u exata
+    x_utarget = np.arange(0, 1.0000000001, dx)
+    y_utarget = np.array([_u(x_utarget[i]) for i in range(len(x_utarget))])
+
+
+    # used in aprox
+    u_old = np.array([u0(i) for i in x_utarget])
     u_new = np.array([])
 
-    erro = np.array([])
-    
-    x_utarget = np.arange(0,N+1,1)
-    y_utarget = np.array([_u(x_utarget[i]) for i in range(len(x_utarget))])
+    erro = []
     
     for k in tqdm(range(1, M)):
         # adicionar u(k+1,0) na u_new
-        u_new = np.append(u_new, g1(k))
+        u_new = np.append(u_new, g1(k*dt))
 
         for i in range(1, N):
             u_new = np.append(u_new, u_old[i] + dt * ((u_old[i-1] - 2*u_old[i] + u_old[i+1]) / np.power(dx, 2) + _f(k*dt,i*dx)))
         
         # adicionar u(k+1,N) na u_new
-        u_new = np.append(u_new, g2(k))
+        u_new = np.append(u_new, g2(k*dt))
         
         u_old = u_new.copy()
         u_new = []
         
         # calcular o erro
-        erro = np.append(erro, np.amax(abs(y_utarget-u_old)))
+        erro = np.max(abs(y_utarget-u_old))
         
     print('-'*15+'Heat Equation done'+'-'*15+'\n')
     return u_old, erro
-    
-def plot(us, _u):
+
+def plot(us, _u, erro):
     import matplotlib.pyplot as plt
     import matplotlib as mpl
     mpl.rcParams['lines.linewidth'] = 0.1
@@ -85,10 +66,6 @@ def plot(us, _u):
     fig.suptitle('Plot para N = ' + str(len(us[0])-1))
     plt.subplots_adjust(hspace = 0.4) # height space between subplots
     
-    print(us[0])
-    print(us[1])
-    print(us[2]) 
-
     x_us = np.arange(0,1.0000000000001,1/(len(us[0])-1))
     us_dots = [2 for i in range(len(us[0]))] # list of dot sizes
 
@@ -100,7 +77,7 @@ def plot(us, _u):
     
     axs[0].scatter(x_us, us[0], s=us_dots)
     axs[0].scatter(x_utarget, y_target, s=target_dots, alpha=0.1)
-    axs[0].set_title("u(t,x) - Lambda = 0.25", 
+    axs[0].set_title("u(t,x) | Lambda = 0.25 | erro(T=1) = "+str(erro[0]), 
                         fontdict={
                             'fontsize': 8,
                             'fontweight' : 0.3,
@@ -110,7 +87,7 @@ def plot(us, _u):
 
     axs[1].scatter(x_us, us[1], s=us_dots)
     axs[1].scatter(x_utarget, y_target, s=target_dots, alpha=0.1)
-    axs[1].set_title("u(t,x) - Lambda = 0.50", 
+    axs[1].set_title("u(t,x) | Lambda = 0.50 | erro(T=1) = "+str(erro[1]), 
                         fontdict={
                             'fontsize': 8,
                             'fontweight' : 0.3,
@@ -120,7 +97,7 @@ def plot(us, _u):
 
     axs[2].scatter(x_us, us[2], s=us_dots)
     axs[2].scatter(x_utarget, y_target, s=target_dots, alpha=0.1)
-    axs[2].set_title("u(t,x) - Lambda = 0.51", 
+    axs[2].set_title("u(t,x) | Lambda = 0.51 | erro(T=1) = "+str(erro[2]), 
                         fontdict={
                             'fontsize': 8,
                             'fontweight' : 0.3,
@@ -133,52 +110,12 @@ def plot(us, _u):
         ax.label_outer()
 
     # save image as png
-    fig.savefig("figure of n = {}.png".format(len(us[0])-1), dpi=300)
-
-def letra_a():
-    T = 1
-    lamb_list = [0.25 , 0.5 , 0.51]
-    
-    # u(0, x) = u0(x) em [0, 1]
-    def u0():
-        return 0
-
-    # condiçõees de fronteira nulas
-    def _g1(t):
-        t = 0
-        return t
-    
-    def _g2(t):
-        t = 0
-        return t
-    
     try:
-        N = int(input("Type N: "))
+        fig.savefig(r"Primeira_tarefa\figuras_b\Figure of n = {}.png".format(len(us[0])-1), dpi=300)
     except:
-        print("Wrong type! N must be an integer!")
-        N = int(input("Type N: "))
+        fig.savefig(r"Primeira_tarefa/figuras_b/Figure of n = {}.png".format(len(us[0])-1), dpi=300)
 
-    def _f(t, x):
-        return 10*(np.power(x, 2))*(x - 1) - 60*x*t + 20*t 
-    
-    #solucao exata que precisamos nos aproximar:
-    def _u(x):
-        return 10*T*(np.power(x, 2))*(x - 1)        
-    
-    us = []
-    erros = []
-    
-    for lamb in lamb_list:
-        u_old, erro = heat_equation(u0, T, N, _f, lamb, _g1, _g2, _u)
-        us.append(u_old)
-        
-        erros.append(erro)
-        
-    print('\n\n', erros, '\n\n')    
-    plot(us, _u)
-    
-def letra_b():
-    
+def main():
     def _u0(x):
         return np.exp(-x)
     
@@ -189,7 +126,7 @@ def letra_b():
         return np.exp(t-1)*np.cos(5*t)
     
     def _f(t, x):
-        return ut - uxx
+        return np.exp(t-x)*np.cos(5*t*x) - np.exp(t-x)*(10*t*np.sin(5*t*x) + (1-25*np.power(t,2))*np.cos(5*t*x))
         
     T = 1
     lamb_list = [0.25 , 0.5 , 0.51]
@@ -201,7 +138,7 @@ def letra_b():
         N = int(input("Type N: "))
         
     def _u(x):
-        return (-x)*np.exp(T-x)*np.cos(5*T*x)    
+        return np.exp(T-x)*np.cos(5*T*x)    
 
     us = []
     erros = []
@@ -212,7 +149,7 @@ def letra_b():
         
         erros.append(erro)
         
-    print('\n\n', erros, '\n\n')    
-    plot(us, _u)
+    print('Erro: \n\n', erros, '\n\n')    
+    plot(us, _u, erros)
 
 main()
