@@ -1,10 +1,18 @@
 #!/usr/bin/env python3
 import time
 start_time = time.time()
-import numpy as np   
+import sys
+import numpy as np
 from tqdm import tqdm
 import warnings
 warnings.filterwarnings("ignore")
+import os
+
+current_path = os.path.abspath(__file__)
+current_path = current_path.split('/')
+current_path = current_path[:len(current_path) - 1]
+current_path = "/".join(current_path)
+
 
 def heat_equation(T, N, _f, lamb):
     """
@@ -39,7 +47,8 @@ def heat_equation(T, N, _f, lamb):
     list_times = [i for i in range(0, M +1 ,M//10)]
     
     for k in tqdm(range(1, M)):
-        # adicionar u(k+1,0) = 0 na u_new
+
+        # adicionar u(k+1,0) = 0 na u_new 
         u_new = np.append(u_new, 0)
 
         for i in range(1, N):
@@ -101,10 +110,13 @@ def plot(us):
     axs.flat[22].set(ylabel='Lambda = 0.51')
 
     # save image as png
-    try:
+    if sys.platform.startswith('win32') or sys.platform.startswith('cygwin'):
         fig.savefig(r"Primeira_tarefa\figuras_c\Figure of n = {}.png".format(len(us[0][0])-1), dpi=300)
-    except:
-        fig.savefig(r"Primeira_tarefa/figuras_c/Figure of n = {}.png".format(len(us[0][0])-1), dpi=300)
+    elif sys.platform.startswith('darwin') or sys.platform.startswith('linux'):
+        fig.savefig(current_path + "/figuras_c" +"/Figure of n = {}.png".format(len(us[0][0])-1), dpi=300)
+    else:
+        print('--- AIX: saving fig at current directory ---')
+        fig.savefig("letra_c_figure of n = {}.png".format(len(us[0][0])-1), dpi=300)
 
 def main():
     
@@ -129,11 +141,12 @@ def main():
             "gh(x) poderia assumir o valor 1/h em p e variar linearmente de 0 a 1/h no intervalo [p − h, p]"
             return 10000*(1-2*np.power(t,2)) * ((1/np.power(dx,2))*(x + dx - p))
 
-        if (p < x <= p + dx):
-            "e (gh(x) poderia assumir o valor) de 1/h a 0 no intervalo [p, p + h], sendo nula no restante do dom´ınio."
+        elif (p < x <= p + dx):
+            "e (gh(x) poderia assumir o valor de 1/h a 0 no intervalo [p, p + h], sendo nula no restante do domínio."
             return 10000*(1-2*np.power(t,2)) * ((1/np.power(dx,2))*(-x + dx + p))
         
-        return 0
+        else:
+            return 0
         
                 
     T = 1

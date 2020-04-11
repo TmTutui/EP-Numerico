@@ -1,10 +1,17 @@
 #!/usr/bin/env python3
 import time
 start_time = time.time()
-import numpy as np   
+import sys
+import numpy as np
 from tqdm import tqdm
 import warnings
 warnings.filterwarnings("ignore")
+import os
+
+current_path = os.path.abspath(__file__)
+current_path = current_path.split('/')
+current_path = current_path[:len(current_path) - 1]
+current_path = "/".join(current_path)
     
 def heat_equation(u0, T, N, _f, lamb, g1, g2, _u):
     """
@@ -120,10 +127,13 @@ def plot(us, _u, erro):
         ax.label_outer()
 
     # save image as png
-    try:
-        fig.savefig(r"Primeira_tarefa\figuras_a\Figure of n = {}.png".format(len(us[0])-1), dpi=300)
-    except:
-        fig.savefig(r"Primeira_tarefa/figuras_a/Figure of n = {}.png".format(len(us[0])-1), dpi=300)
+    if sys.platform.startswith('win32') or sys.platform.startswith('cygwin'):
+        fig.savefig(r"Primeira_tarefa\figuras_c\Figure of n = {}.png".format(len(us[0][0])-1), dpi=300)
+    elif sys.platform.startswith('darwin') or sys.platform.startswith('linux'):
+        fig.savefig(current_path + "/figuras_c" +"/Figure of n = {}.png".format(len(us[0][0])-1), dpi=300)
+    else:
+        print('--- AIX: saving fig at current directory ---')
+        fig.savefig("letra_c_figure of n = {}.png".format(len(us[0][0])-1), dpi=300)
 
 def main():
     T = 1
