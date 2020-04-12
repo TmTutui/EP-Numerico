@@ -128,12 +128,12 @@ def plot(us, _u, erro):
 
     # save image as png
     if sys.platform.startswith('win32') or sys.platform.startswith('cygwin'):
-        fig.savefig(r"Primeira_tarefa\figuras_c\Figure of n = {}.png".format(len(us[0][0])-1), dpi=300)
+        fig.savefig(r"Primeira_tarefa\figuras_a\Figure of n = {}.png".format(len(us[0])-1), dpi=300)
     elif sys.platform.startswith('darwin') or sys.platform.startswith('linux'):
-        fig.savefig(current_path + "/figuras_c" +"/Figure of n = {}.png".format(len(us[0][0])-1), dpi=300)
+        fig.savefig(current_path + "/figuras_a" +"/Figure of n = {}.png".format(len(us[0])-1), dpi=300)
     else:
         print('--- AIX: saving fig at current directory ---')
-        fig.savefig("letra_c_figure of n = {}.png".format(len(us[0][0])-1), dpi=300)
+        fig.savefig("letra_a_figure of n = {}.png".format(len(us[0])-1), dpi=300)
 
 def main():
     T = 1
