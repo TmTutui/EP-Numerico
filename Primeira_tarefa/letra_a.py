@@ -161,8 +161,8 @@ def main():
         "Target solution"
         return 10*T*(np.power(x, 2))*(x - 1)        
     
-    us = np.array([])
-    erros = np.array([])
+    us = []
+    erros = []
     
     for lamb in lamb_list:
         u_old, erro = heat_equation(u0, T, N, _f, lamb, g1, g2, _u)

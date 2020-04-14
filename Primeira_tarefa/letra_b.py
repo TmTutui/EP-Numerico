@@ -170,8 +170,8 @@ def main():
         "Target solution."
         return np.exp(T-x)*np.cos(5*T*x)    
 
-    us = np.array([])
-    erros = np.array([])
+    us = []
+    erros = []
     
     for lamb in lamb_list:
         u_old, erro = heat_equation(_u0, T, N, _f, lamb, _g1, _g2, _u)
