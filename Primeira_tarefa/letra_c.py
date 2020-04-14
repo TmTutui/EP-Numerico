@@ -150,7 +150,7 @@ def main():
         
                 
     T = 1
-    lamb_list = [0.25 , 0.5 , 0.51]
+    lamb_list = np.array([0.25 , 0.5 , 0.51])
     
     try:
         N = int(input("Type N: "))
@@ -162,7 +162,7 @@ def main():
         "Target solution."
         return np.exp(T-x)*np.cos(5*T*x)    
 
-    us = []
+    us = np.array([])
     
     for lamb in lamb_list:
         u_olds = heat_equation(T, N, _f, lamb)

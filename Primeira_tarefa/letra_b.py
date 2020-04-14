@@ -158,7 +158,7 @@ def main():
         return np.exp(t-x)*5*(5*np.power(t,2)*np.cos(5*t*x) - (x + 2*t)*np.sin(5*t*x))
         
     T = 1
-    lamb_list = [0.25 , 0.5 , 0.51]
+    lamb_list = np.array([0.25 , 0.5 , 0.51])
     
     try:
         N = int(input("Type N: "))
@@ -170,8 +170,8 @@ def main():
         "Target solution."
         return np.exp(T-x)*np.cos(5*T*x)    
 
-    us = []
-    erros = []
+    us = np.array([])
+    erros = np.array([])
     
     for lamb in lamb_list:
         u_old, erro = heat_equation(_u0, T, N, _f, lamb, _g1, _g2, _u)

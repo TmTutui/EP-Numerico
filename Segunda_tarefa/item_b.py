@@ -1,18 +1,5 @@
-#!/usr/bin/env python3
-import time
-start_time = time.time()
-import sys
 import numpy as np
-from tqdm import tqdm
-import warnings
-warnings.filterwarnings("ignore")
-import os
-
-current_path = os.path.abspath(__file__)
-current_path = current_path.split('/')
-current_path = current_path[:len(current_path) - 1]
-current_path = "/".join(current_path)
-    
+from Segunda_tarefa.item_a import decompose_A, calculate_x,calculate_y,calculate_z
 def heat_equation(u0, T, N, _f, lamb, g1, g2, _u):
     """
     Heat Equation:
@@ -36,8 +23,8 @@ def heat_equation(u0, T, N, _f, lamb, g1, g2, _u):
     print('-'*15+'Heat Equation in progress'+'-'*15+'\n')
     
     dx = 1/N
-    dt = dx
-    M = T/dt    
+    M = int(T*np.power(N, 2)/lamb)
+    dt = T/M    
 
     # used in u exata
     x_utarget = np.arange(0, 1.0000000001, dx)
@@ -47,25 +34,13 @@ def heat_equation(u0, T, N, _f, lamb, g1, g2, _u):
     u_old = np.array([u0 for i in x_utarget])
     u_new = np.array([])
     
-    for k in tqdm(range(1, M)):
-        # adicionar u(k+1,0) na u_new
-        u_new = np.append(u_new, g1)
 
-        for i in range(1, N):
-            u_new = np.append(u_new, u_old[i] + dt * ((u_old[i-1] - 2*u_old[i] + u_old[i+1]) / np.power(dx, 2) + _f(k*dt,i*dx) ))
-        
-        # adicionar u(k+1,N) na u_new
-        u_new = np.append(u_new, g2)
-        
-        u_old = u_new.copy()
-        u_new = []
-        
     # calcular o erro
     erro = np.max(abs(y_utarget-u_old))
         
     print('-'*15+'Heat Equation done'+'-'*15+'\n')
     return u_old, erro
-    
+
 def plot(us, _u, erro):
     """
     Plot a graph using matplotlib
@@ -159,11 +134,11 @@ def main():
     #solucao exata que precisamos nos aproximar:
     def _u(x):
         "Target solution"
-        return 10*T*(np.power(x, 2))*(x - 1)        
-    
+        return 10*T*(np.power(x, 2))*(x - 1)   
+
     us = np.array([])
     erros = np.array([])
-    
+
     for lamb in lamb_list:
         u_old, erro = heat_equation(u0, T, N, _f, lamb, g1, g2, _u)
         us.append(u_old)
@@ -172,5 +147,3 @@ def main():
     
     plot(us, _u, erros)
     print("--- %s seconds ---"%round(time.time() - start_time, 4))
-
-main()

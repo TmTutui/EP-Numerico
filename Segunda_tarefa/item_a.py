@@ -107,5 +107,3 @@ def teste4():
     x = calculate_x(sub_L,z)
 
     print(x)
-
-
