@@ -52,7 +52,7 @@ def heat_equation(u0, T, N, _f, lamb, g1, g2, _u):
     diag_D, sub_L = decompose_A(A_diag,A_sub)
 
     # Ax = b ou seja A*u_new[1:N-1] = b
-    for k in tqdm(range(1KO, M)):
+    for k in tqdm(range(1, M)):
         # adicionar u(k+1,0) na u_new
         u_new = np.array([g1])
 
