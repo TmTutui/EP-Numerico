@@ -36,8 +36,8 @@ def heat_equation(u0, T, N, _f, lamb, g1, g2, _u):
     print('-'*15+'Heat Equation in progress'+'-'*15+'\n')
     
     dx = 1/N
-    dt = dx
-    M = T/dt    
+    M = int(T*np.power(N, 2)/lamb)
+    dt = T/M    
 
     # used in u exata
     x_utarget = np.arange(0, 1.0000000001, dx)
@@ -49,7 +49,7 @@ def heat_equation(u0, T, N, _f, lamb, g1, g2, _u):
     
     for k in tqdm(range(1, M)):
         # adicionar u(k+1,0) na u_new
-        u_new = np.append(u_new, g1)
+        u_new = np.array([g1])
 
         for i in range(1, N):
             u_new = np.append(u_new, u_old[i] + dt * ((u_old[i-1] - 2*u_old[i] + u_old[i+1]) / np.power(dx, 2) + _f(k*dt,i*dx) ))
@@ -58,7 +58,6 @@ def heat_equation(u0, T, N, _f, lamb, g1, g2, _u):
         u_new = np.append(u_new, g2)
         
         u_old = u_new.copy()
-        u_new = []
         
     # calcular o erro
     erro = np.max(abs(y_utarget-u_old))

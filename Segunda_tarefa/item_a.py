@@ -2,7 +2,7 @@
 import numpy as np
 
 def decompose_A(principal,sub):
-    # Funcao que decompoe a matriz A em L e em D (A = LD(L^-1))
+    "Funcao que decompoe a matriz A em L e em D (A = LD(L^-1))"
     # Recebe duas listas: a diagonal principal de A e a subdiagonal de A
     # Retorna duas listas: a diagonal Principal de D e a subdiagonal de L
 
@@ -24,7 +24,7 @@ def decompose_A(principal,sub):
 
 @DeprecationWarning
 def dot_product(A,B): # work for two square matrices
-    # Receive two square matrices and return a Matrix
+    "Receive two square matrices and return a Matrix"
     matrix = np.array([[0 for i in range(len(A))]])
     for i in range(len(A)-1):
         line = np.array([])
@@ -43,7 +43,7 @@ def dot_product(A,B): # work for two square matrices
 
 @DeprecationWarning
 def transpose(A): # work for squace matrix
-    # Receive a matrix and return it transposed
+    "Receive a matrix and return it transposed"
     A = np.array(A) #make sure A is a np array not a list
     A_t = A.copy()
 
@@ -54,7 +54,7 @@ def transpose(A): # work for squace matrix
     return A_t
 
 def calculate_y(sub_L,b):
-    # Ly = b
+    "Ly = b"
     # Receive sub diagonal of L(list) and the column matrix b and return y
     y = np.array([b[0]])
     
@@ -64,7 +64,7 @@ def calculate_y(sub_L,b):
     return y
 
 def calculate_z(diag_D,y):
-    # Dz = y
+    "Dz = y"
     # Receive diagonal of D(list) and the column matrix y and return z
     z = np.array([])
     
@@ -74,7 +74,7 @@ def calculate_z(diag_D,y):
     return z
 
 def calculate_x(sub_L,z):
-    # L*(transposed)x = z
+    "L*(transposed)x = z"
     # Receive super diagonal of L transposed(list) and the column matrix z and return x
     x = np.zeros(len(z))
     x[len(x)-1] = z[len(z)-1]

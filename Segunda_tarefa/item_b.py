@@ -1,5 +1,17 @@
+import time
+start_time = time.time()
 import numpy as np
-from Segunda_tarefa.item_a import decompose_A, calculate_x,calculate_y,calculate_z
+from tqdm import tqdm
+import os
+import sys
+
+from item_a import decompose_A, calculate_x,calculate_y,calculate_z
+
+current_path = os.path.abspath(__file__)
+current_path = current_path.split('/')
+current_path = current_path[:len(current_path) - 1]
+current_path = "/".join(current_path)
+
 def heat_equation(u0, T, N, _f, lamb, g1, g2, _u):
     """
     Heat Equation:
@@ -23,8 +35,8 @@ def heat_equation(u0, T, N, _f, lamb, g1, g2, _u):
     print('-'*15+'Heat Equation in progress'+'-'*15+'\n')
     
     dx = 1/N
-    M = int(T*np.power(N, 2)/lamb)
-    dt = T/M    
+    dt = dx
+    M = int(T/dt)     
 
     # used in u exata
     x_utarget = np.arange(0, 1.0000000001, dx)
@@ -32,8 +44,37 @@ def heat_equation(u0, T, N, _f, lamb, g1, g2, _u):
 
     # used in aprox
     u_old = np.array([u0 for i in x_utarget])
-    u_new = np.array([])
-    
+
+    # matrix A
+    A_diag = np.array([(1+2*lamb) for i in range(N-1)])
+    A_sub = np.array([(-lamb) for i in range(N-2)])
+
+    diag_D, sub_L = decompose_A(A_diag,A_sub)
+
+    # Ax = b ou seja A*u_new[1:N-1] = b
+    for k in tqdm(range(1KO, M)):
+        # adicionar u(k+1,0) na u_new
+        u_new = np.array([g1])
+
+        # create b 
+        b = np.array([])
+        for i in range(1, N):
+            # it is possible to do everything in a loop cause g1=g2=0
+            b = np.append(b, u_old[i] + dt*_f(dt*k,dx*i))
+
+        # find x
+        y = calculate_y(sub_L,b)
+        z = calculate_z(diag_D,y)
+        x = calculate_x(sub_L,z)
+
+        for x_element in x:
+            u_new = np.append(u_new, x_element)
+        
+        # adicionar u(k+1,N) na u_new
+        u_new = np.append(u_new, g2)
+        print(u_new)
+        
+        u_old = u_new.copy()
 
     # calcular o erro
     erro = np.max(abs(y_utarget-u_old))
@@ -103,12 +144,12 @@ def plot(us, _u, erro):
 
     # save image as png
     if sys.platform.startswith('win32') or sys.platform.startswith('cygwin'):
-        fig.savefig(r"Primeira_tarefa\figuras_a\Figure of n = {}.png".format(len(us[0])-1), dpi=300)
+        fig.savefig(r"Segunda_tarefa\figuras_b\Figure of n = {}.png".format(len(us[0])-1), dpi=300)
     elif sys.platform.startswith('darwin') or sys.platform.startswith('linux'):
-        fig.savefig(current_path + "/figuras_a" +"/Figure of n = {}.png".format(len(us[0])-1), dpi=300)
+        fig.savefig(current_path + "/figuras_b" +"/Figure of n = {}.png".format(len(us[0])-1), dpi=300)
     else:
         print('--- AIX: saving fig at current directory ---')
-        fig.savefig("letra_a_figure of n = {}.png".format(len(us[0])-1), dpi=300)
+        fig.savefig("letra_b_figure of n = {}.png".format(len(us[0])-1), dpi=300)
 
 def main():
     T = 1
@@ -136,8 +177,8 @@ def main():
         "Target solution"
         return 10*T*(np.power(x, 2))*(x - 1)   
 
-    us = np.array([])
-    erros = np.array([])
+    us = []
+    erros = []
 
     for lamb in lamb_list:
         u_old, erro = heat_equation(u0, T, N, _f, lamb, g1, g2, _u)
@@ -147,3 +188,5 @@ def main():
     
     plot(us, _u, erros)
     print("--- %s seconds ---"%round(time.time() - start_time, 4))
+
+main()
