@@ -13,7 +13,7 @@ current_path = current_path.split('/')
 current_path = current_path[:len(current_path) - 1]
 current_path = "/".join(current_path)
     
-def heat_equation(u0, T, N, _f, lamb, g1, g2, _u):
+def heat_equation(_u0, T, N, _f, lamb, g1, g2, _u):
     """
     Heat Equation:
         u0: uo(x) - math function
@@ -41,29 +41,36 @@ def heat_equation(u0, T, N, _f, lamb, g1, g2, _u):
 
     # used in u exata
     x_utarget = np.arange(0, 1.0000000001, dx)
-    y_utarget = np.array([_u(x_utarget[i]) for i in range(len(x_utarget))])
+    y_utarget = np.array([_u(T, x_utarget[i]) for i in range(len(x_utarget))])
 
     # used in aprox
-    u_old = np.array([u0 for i in x_utarget])
+    u_old = np.array([_u0(x_utarget[i]) for i in range(len(x_utarget))])
     u_new = np.array([])
+
+    # u for every 0.1 units of time
+    u_interval = np.array([u_old])
+    list_times = [i for i in range(0, M +1 ,M//10)]
     
     for k in tqdm(range(0, M)):
         # adicionar u(k+1,0) na u_new
         u_new = np.array([g1])
 
         for i in range(1, N):
-            u_new = np.append(u_new, u_old[i] + dt * ((u_old[i-1] - 2*u_old[i] + u_old[i+1]) / np.power(dx, 2) + _f(k*dt,i*dx) ))
-        
+            u_new = np.append(u_new, u_old[i] + dt * ((u_old[i-1] - 2*u_old[i] + u_old[i+1]) / np.power(dx, 2) + _f(k*dt,i*dx) ))   
+
         # adicionar u(k+1,N) na u_new
         u_new = np.append(u_new, g2)
-        
+
         u_old = u_new.copy()
-        
+
+        if( (k+1) in list_times ):
+            u_interval = np.append(u_interval, [u_old], axis = 0)
+    
     # calcular o erro
     erro = np.max(abs(y_utarget-u_old))
         
     print('-'*15+'Heat Equation done'+'-'*15+'\n')
-    return u_old, erro
+    return u_interval, erro   
     
 def plot(us, _u, erro):
     """
@@ -77,70 +84,77 @@ def plot(us, _u, erro):
     import matplotlib.pyplot as plt
     import matplotlib as mpl
     mpl.rcParams['lines.linewidth'] = 0.1
+    plt.rcParams["figure.figsize"] = (40,5)
     
-    fig, axs = plt.subplots(3)
-    fig.suptitle('Plot para N = ' + str(len(us[0])-1))
-    plt.subplots_adjust(hspace = 0.4) # height space between subplots
+    fig, axs = plt.subplots(3,11, gridspec_kw={ 'hspace' : 0.45, 'wspace': 0.47})
+    fig.suptitle('Plot para N = ' + str(len(us[0][0])-1))
+    plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
     
-    x_us = np.arange(0,1.0000000000001,1/(len(us[0])-1))
-    us_dots = [2 for i in range(len(us[0]))] # list of dot sizes
+    x_us = np.arange(0,1.0000000000001,1/(len(us[0][0])-1))
+    us_dots = [2 for i in range(len(us[0][0]))] # list of dot sizes
 
     # Valores da solução exata
     x_utarget = np.arange(0,1,0.001)
-    y_target = np.array([_u(x_utarget[i]) for i in range(len(x_utarget))])
+    y_target = np.array([_u(1, x_utarget[i]) for i in range(len(x_utarget))])
     
     target_dots = [0.1 for i in range(len(y_target))] # list of dot sizes
     
-    axs[0].scatter(x_us, us[0], s=us_dots)
-    axs[0].scatter(x_utarget, y_target, s=target_dots, alpha=0.1)
-    axs[0].set_title("u(t,x) | Lambda = 0.25 | erro(T=1) = "+str(erro[0]), 
-                        fontdict={
-                            'fontsize': 8,
-                            'fontweight' : 0.3,
-                        },
-                        loc = 'center',
-                    )
 
-    axs[1].scatter(x_us, us[1], s=us_dots)
-    axs[1].scatter(x_utarget, y_target, s=target_dots, alpha=0.1)
-    axs[1].set_title("u(t,x) | Lambda = 0.50 | erro(T=1) = "+str(erro[1]), 
-                        fontdict={
-                            'fontsize': 8,
-                            'fontweight' : 0.3,
-                        },
-                        loc = 'center',
-                    )
+    for i in range(11):
+        axs[0,i].scatter(x_us, us[0][i], s=us_dots, c='#80ab4e')
+        """ axs[0,i].set_xticks(np.arange(min(x_us), max(x_us)+1, 0.2)) """
+        axs[0,i].ticklabel_format(style='sci', axis='y', scilimits=(0,0))
+        axs.flat[i].yaxis.label.set_color('#80ab4e')
 
-    axs[2].scatter(x_us, us[2], s=us_dots)
-    axs[2].scatter(x_utarget, y_target, s=target_dots, alpha=0.1)
-    axs[2].set_title("u(t,x) | Lambda = 0.51 | erro(T=1) = "+str(erro[2]), 
-                        fontdict={
-                            'fontsize': 8,
-                            'fontweight' : 0.3,
-                        },
-                        loc = 'center',
-                    )
+        axs[1,i].scatter(x_us, us[1][i], s=us_dots, c='#FF8C00')
+        """ axs[1,i].set_xticks(np.arange(min(x_us), max(x_us)+1, 0.2)) """
+        axs[1,i].ticklabel_format(style='sci', axis='y', scilimits=(0,0))
+        axs.flat[i + 11].yaxis.label.set_color('#FF8C00')
 
-    # use same x label for every subplot
-    for ax in fig.get_axes():
-        ax.label_outer()
+        axs[2,i].scatter(x_us, us[2][i], s=us_dots, c='red')
+        """ axs[2,i].set_xticks(np.arange(min(x_us), max(x_us)+1, 0.2)) """
+        axs[2,i].ticklabel_format(style='sci', axis='y', scilimits=(0,0))
+        axs.flat[i + 22].set(xlabel='tempo = ' + str(i/10))
+        axs.flat[i + 22].yaxis.label.set_color('red')
+
+
+    axs.flat[0].set(ylabel='Lambda = 0.25')
+    axs.flat[11].set(ylabel='Lambda = 0.5')
+    axs.flat[22].set(ylabel='Lambda = 0.51')
+
+
+    axs.flat[10].scatter(x_utarget, y_target, s=target_dots, alpha=0.1)
+    axs.flat[21].scatter(x_utarget, y_target, s=target_dots, alpha=0.1)
+    axs.flat[32].scatter(x_utarget, y_target, s=target_dots, alpha=0.1)
+
+    axs.flat[10].yaxis.set_label_position("right")
+    axs.flat[10].yaxis.label.set_color('black')
+    axs.flat[10].yaxis.label.set_fontsize(6)
+    axs.flat[10].set(ylabel="erro(T=1) = "+str(round(erro[0],10)))
+    
+    axs.flat[21].yaxis.set_label_position("right")
+    axs.flat[21].yaxis.label.set_color('black')
+    axs.flat[21].yaxis.label.set_fontsize(6)
+    axs.flat[21].set(ylabel="erro(T=1) = "+str(round(erro[1],10)))
+
+    axs.flat[32].yaxis.set_label_position("right")
+    axs.flat[32].yaxis.label.set_color('black')
+    axs.flat[32].yaxis.label.set_fontsize(6)
+    axs.flat[32].set(ylabel="erro(T=1) = "+str(round(erro[2],10)))
+
 
     # save image as png
     if sys.platform.startswith('win32') or sys.platform.startswith('cygwin'):
-        fig.savefig(r"Primeira_tarefa\figuras_a\Figure of n = {}.png".format(len(us[0])-1), dpi=300)
+        fig.savefig(r"Primeira_tarefa\figuras_a\Figure of n = {}.png".format(len(us[0][0])-1), dpi=300)
     elif sys.platform.startswith('darwin') or sys.platform.startswith('linux'):
-        fig.savefig(current_path + "/figuras_a" +"/Figure of n = {}.png".format(len(us[0])-1), dpi=300)
+        fig.savefig(current_path + "/figuras_a" +"/Figure of n = {}.png".format(len(us[0][0])-1), dpi=300)
     else:
         print('--- AIX: saving fig at current directory ---')
         fig.savefig("letra_a_figure of n = {}.png".format(len(us[0])-1), dpi=300)
 
 def main():
     T = 1
-    lamb_list = np.array([0.25 , 0.5 , 0.51])
     
-    # u(0, x) = u0(x) em [0, 1]
-    u0 = 0
-
     # condições de fronteira nulas
     g1 = 0
     g2 = 0
@@ -153,19 +167,23 @@ def main():
 
     def _f(t, x):
         "Descrição da fonte de calor ao longo do tempo"
-        return 10*(np.power(x, 2))*(x - 1) - 60*x*t + 20*t 
+        return 10*np.cos(10*t) * x**2 * (1-x)**2 - (1 + np.sin(10*t))*(12*x**2 - 12*x + 2)
     
+    def _u0(x):
+        "Condição de contorno"
+        return np.power(x, 2) * np.power((1 - x), 2)
+
     #solucao exata que precisamos nos aproximar:
-    def _u(x):
+    def _u(t, x):
         "Target solution"
-        return 10*T*(np.power(x, 2))*(x - 1)        
+        return (1 + np.sin(10*t)) * x**2 * (1 - x)**2     
     
     us = []
     erros = []
     
-    for lamb in lamb_list:
-        u_old, erro = heat_equation(u0, T, N, _f, lamb, g1, g2, _u)
-        us.append(u_old)
+    for lamb in np.array([0.25 , 0.5 , 0.51]):
+        u_olds, erro = heat_equation(_u0, T, N, _f, lamb, g1, g2, _u)
+        us.append(u_olds)
         
         erros.append(erro)
     

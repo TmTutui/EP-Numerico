@@ -156,9 +156,18 @@ def main():
     T = 1
     lamb_list = np.array([0.25, 0.5, 0.51])
     
+    def _f(t, x):
+        "Descrição da fonte de calor ao longo do tempo"
+        return 10*np.cos(10*t) * x**2 * (1-x)**2 - (1 + np.sin(10*t))*(12*x**2 - 12*x + 2)
+    
     def _u0(x):
-        "Distribuição inicial."
-        return 0
+        "Condição de contorno"
+        return np.power(x, 2) * np.power((1 - x), 2)
+
+    #solucao exata que precisamos nos aproximar:
+    def _u(x):
+        "Target solution"
+        return (1 + np.sin(10*1)) * x**2 * (1 - x)**2   
     
     def _g1(t):
         "Condição de fronteira x = 0."
@@ -173,16 +182,7 @@ def main():
     except:
         print("Wrong type! N must be an integer!")
         N = int(input("Type N: "))
-
-    def _f(t, x):
-        "Descrição da fonte de calor ao longo do tempo"
-        return 10*(np.power(x, 2))*(x - 1) - 60*x*t + 20*t 
     
-    #solucao exata que precisamos nos aproximar:
-    def _u(x):
-        "Target solution"
-        return 10*T*(np.power(x, 2))*(x - 1)   
-
     us = []
     erros = []
 
@@ -196,76 +196,3 @@ def main():
     print("--- %s seconds ---"%round(time.time() - start_time, 4))
 
 main()
-
-
-
-def heat_equation_Joker(u0, T, N, _f, lamb, g1, g2, _u):
-    """
-    Heat Equation:
-        u0: uo(x) - math function
-        N: int (input)
-        M: int (input)
-        T: float
-        i = 1, ..., N-1
-        k = 0, ..., M-1
-        f: math function - f(t,x)
-        u: Heat Equation - u(t, x)
-        xi = i∆x, i = 0, · · · , N, com ∆x = 1/N. Para a discretização temporal definimos ∆t = T /M, e
-        calculamos aproximações nos instantes tk = k∆t, k = 1, · · · , M. 
-        A variável u(t, x) descreve a temperatura no instante t na posição x, sendo a distribuição inicial u0(x) dada
-
-    return: 
-        u_old: array
-        erro: list
-    """
-    
-    print('-'*15+'Heat Equation in progress'+'-'*15+'\n')
-    
-    dx = 1/N
-    dt = dx
-    M = int(T/dt)     
-
-    # used in u exata
-    x_utarget = np.arange(0, 1.0000000001, dx)
-    y_utarget = np.array([_u(x_utarget[i]) for i in range(len(x_utarget))])
-
-    # used in aprox
-    u_old = np.array([u0 for i in x_utarget])
-
-    # matrix A
-    A_diag = np.array([(1+lamb) for i in range(N-1)])
-    A_sub = np.array([(-lamb/2) for i in range(N-2)])
-
-    diag_D, sub_L = decompose_A(A_diag,A_sub)
-
-    # Ax = b ou seja A*u_new[1:N-1] = b
-    for k in tqdm(range(0, M)):
-        # adicionar u(k+1,0) na u_new
-        u_new = np.array([g1(k+1)])
-
-        # create b 
-        b = np.array([u_old[0] + (lamb/2)*(u_old[0] + 2*u_old[1] + u_old[2]) + (dt/2)*(_f(dt*(k+1),dx*0) + _f(dt*k,dx*0)) + (lamb/2)*g1(k+1)])
-        for i in range(2, N-1 ):
-            b = np.append(b, u_old[i] + (lamb/2)*(u_old[i-1] + 2*u_old[i] + u_old[i+1]) + (dt/2)*(_f(dt*(k+1),dx*i) + _f(dt*k,dx*i)))
-        b = np.append(u_old[N-1] + (lamb/2)*(u_old[N-2] + 2*u_old[N-1] + u_old[N]) + (dt/2)*(_f(dt*(k+1),dx*(N-1)) + _f(dt*k,dx*(N-1))) + (lamb/2)*g2(k+1))
-
-        # find x1
-        y = calculate_y(sub_L,b)
-        z = calculate_z(diag_D,y)
-        x = calculate_x(sub_L,z)
-
-        for x_element in x:
-            u_new = np.append(u_new, x_element)
-        
-        # adicionar u(k+1,N) na u_new
-        u_new = np.append(u_new, g2(k+1))
-        """ print(u_new) """
-        
-        u_old = u_new.copy()
-        print(u_old)
-
-    # calcular o erro
-    erro = np.max(abs(y_utarget-u_old))
-        
-    print('-'*15+'Heat Equation done'+'-'*15+'\n')
-    return u_old, erro

@@ -158,9 +158,6 @@ def main():
         print("Wrong type! N must be an integer!")
         N = int(input("Type N: "))
         
-    def _u(x):
-        "Target solution."
-        return np.exp(T-x)*np.cos(5*T*x)    
 
     us = []
     
