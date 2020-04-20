@@ -91,6 +91,7 @@ def teste4():
         [0,5,28,6],
         [0,0,6,16],
     ]
+
     b=[
        5677.75,
        11477.3,
@@ -101,8 +102,6 @@ def teste4():
     diag_D, sub_L = decompose_A([32.5,131,28,16],[65,5,6])
     # Ly = b, Dz = y e L*x = z
     y = calculate_y(sub_L,b)
-    
-
     z = calculate_z(diag_D,y)
     x = calculate_x(sub_L,z)
 

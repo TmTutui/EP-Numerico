@@ -46,7 +46,7 @@ def heat_equation(T, N, _f, lamb):
     u_interval = np.array([u_old])
     list_times = [i for i in range(0, M +1 ,M//10)]
     
-    for k in tqdm(range(1, M)):
+    for k in tqdm(range(0, M)):
 
         # adicionar u(k+1,0) = 0 na u_new 
         u_new = np.append(u_new, 0)

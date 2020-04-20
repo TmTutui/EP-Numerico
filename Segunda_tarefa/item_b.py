@@ -12,7 +12,7 @@ current_path = current_path.split('/')
 current_path = current_path[:len(current_path) - 1]
 current_path = "/".join(current_path)
 
-def heat_equation(u0, T, N, _f, lamb, g1, g2, _u):
+def heat_equation(_u0, T, N, _f, lamb, _g1, _g2, _u):
     """
     Heat Equation:
         u0: uo(x) - math function
@@ -43,7 +43,7 @@ def heat_equation(u0, T, N, _f, lamb, g1, g2, _u):
     y_utarget = np.array([_u(x_utarget[i]) for i in range(len(x_utarget))])
 
     # used in aprox
-    u_old = np.array([u0 for i in x_utarget])
+    u_old = np.array([_u0(i) for i in x_utarget])
 
     # matrix A
     A_diag = np.array([(1+2*lamb) for i in range(N-1)])
@@ -52,15 +52,15 @@ def heat_equation(u0, T, N, _f, lamb, g1, g2, _u):
     diag_D, sub_L = decompose_A(A_diag,A_sub)
 
     # Ax = b ou seja A*u_new[1:N-1] = b
-    for k in tqdm(range(1, M)):
+    for k in tqdm(range(0, M)):
         # adicionar u(k+1,0) na u_new
-        u_new = np.array([g1])
+        u_new = np.array([_g1(0)])
 
         # create b 
         b = np.array([])
         for i in range(1, N):
             # it is possible to do everything in a loop cause g1=g2=0
-            b = np.append(b, u_old[i] + dt*_f(dt*k,dx*i))
+            b = np.append(b, u_old[i] + dt*_f(dt*(k+1),dx*i))
 
         # find x
         y = calculate_y(sub_L,b)
@@ -71,10 +71,11 @@ def heat_equation(u0, T, N, _f, lamb, g1, g2, _u):
             u_new = np.append(u_new, x_element)
         
         # adicionar u(k+1,N) na u_new
-        u_new = np.append(u_new, g2)
-        print(u_new)
+        u_new = np.append(u_new, _g2(0))
+        """ print(u_new) """
         
         u_old = u_new.copy()
+        print(u_old)
 
     # calcular o erro
     erro = np.max(abs(y_utarget-u_old))
@@ -153,14 +154,19 @@ def plot(us, _u, erro):
 
 def main():
     T = 1
-    lamb_list = np.array([0.25 , 0.5 , 0.51])
+    lamb_list = np.array([0.25, 0.5, 0.51])
     
-    # u(0, x) = u0(x) em [0, 1]
-    u0 = 0
-
-    # condições de fronteira nulas
-    g1 = 0
-    g2 = 0
+    def _u0(x):
+        "Distribuição inicial."
+        return 0
+    
+    def _g1(t):
+        "Condição de fronteira x = 0."
+        return 0
+    
+    def _g2(t):
+        "Condição de fronteira x = 1."
+        return 0
     
     try:
         N = int(input("Type N: "))
@@ -181,7 +187,7 @@ def main():
     erros = []
 
     for lamb in lamb_list:
-        u_old, erro = heat_equation(u0, T, N, _f, lamb, g1, g2, _u)
+        u_old, erro = heat_equation(_u0, T, N, _f, lamb, _g1, _g2, _u)
         us.append(u_old)
         
         erros.append(erro)
@@ -190,3 +196,76 @@ def main():
     print("--- %s seconds ---"%round(time.time() - start_time, 4))
 
 main()
+
+
+
+def heat_equation_Joker(u0, T, N, _f, lamb, g1, g2, _u):
+    """
+    Heat Equation:
+        u0: uo(x) - math function
+        N: int (input)
+        M: int (input)
+        T: float
+        i = 1, ..., N-1
+        k = 0, ..., M-1
+        f: math function - f(t,x)
+        u: Heat Equation - u(t, x)
+        xi = i∆x, i = 0, · · · , N, com ∆x = 1/N. Para a discretização temporal definimos ∆t = T /M, e
+        calculamos aproximações nos instantes tk = k∆t, k = 1, · · · , M. 
+        A variável u(t, x) descreve a temperatura no instante t na posição x, sendo a distribuição inicial u0(x) dada
+
+    return: 
+        u_old: array
+        erro: list
+    """
+    
+    print('-'*15+'Heat Equation in progress'+'-'*15+'\n')
+    
+    dx = 1/N
+    dt = dx
+    M = int(T/dt)     
+
+    # used in u exata
+    x_utarget = np.arange(0, 1.0000000001, dx)
+    y_utarget = np.array([_u(x_utarget[i]) for i in range(len(x_utarget))])
+
+    # used in aprox
+    u_old = np.array([u0 for i in x_utarget])
+
+    # matrix A
+    A_diag = np.array([(1+lamb) for i in range(N-1)])
+    A_sub = np.array([(-lamb/2) for i in range(N-2)])
+
+    diag_D, sub_L = decompose_A(A_diag,A_sub)
+
+    # Ax = b ou seja A*u_new[1:N-1] = b
+    for k in tqdm(range(0, M)):
+        # adicionar u(k+1,0) na u_new
+        u_new = np.array([g1(k+1)])
+
+        # create b 
+        b = np.array([u_old[0] + (lamb/2)*(u_old[0] + 2*u_old[1] + u_old[2]) + (dt/2)*(_f(dt*(k+1),dx*0) + _f(dt*k,dx*0)) + (lamb/2)*g1(k+1)])
+        for i in range(2, N-1 ):
+            b = np.append(b, u_old[i] + (lamb/2)*(u_old[i-1] + 2*u_old[i] + u_old[i+1]) + (dt/2)*(_f(dt*(k+1),dx*i) + _f(dt*k,dx*i)))
+        b = np.append(u_old[N-1] + (lamb/2)*(u_old[N-2] + 2*u_old[N-1] + u_old[N]) + (dt/2)*(_f(dt*(k+1),dx*(N-1)) + _f(dt*k,dx*(N-1))) + (lamb/2)*g2(k+1))
+
+        # find x1
+        y = calculate_y(sub_L,b)
+        z = calculate_z(diag_D,y)
+        x = calculate_x(sub_L,z)
+
+        for x_element in x:
+            u_new = np.append(u_new, x_element)
+        
+        # adicionar u(k+1,N) na u_new
+        u_new = np.append(u_new, g2(k+1))
+        """ print(u_new) """
+        
+        u_old = u_new.copy()
+        print(u_old)
+
+    # calcular o erro
+    erro = np.max(abs(y_utarget-u_old))
+        
+    print('-'*15+'Heat Equation done'+'-'*15+'\n')
+    return u_old, erro

@@ -47,7 +47,7 @@ def heat_equation(u0, T, N, _f, lamb, g1, g2, _u):
     u_old = np.array([u0 for i in x_utarget])
     u_new = np.array([])
     
-    for k in tqdm(range(1, M)):
+    for k in tqdm(range(0, M)):
         # adicionar u(k+1,0) na u_new
         u_new = np.array([g1])
 
