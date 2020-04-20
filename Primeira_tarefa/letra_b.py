@@ -46,7 +46,6 @@ def heat_equation(u0, T, N, _f, lamb, g1, g2, _u):
 
     # used in aprox
     u_old = np.array([u0(i) for i in x_utarget])
-    u_new = np.array([])
 
     # u for every 0.1 units of time
     u_interval = np.array([u_old])
@@ -150,7 +149,7 @@ def plot(us, _u, erro):
         fig.savefig(current_path + "/figuras_b" +"/Figure of n = {}.png".format(len(us[0][0])-1), dpi=300)
     else:
         print('--- AIX: saving fig at current directory ---')
-        fig.savefig("letra_b_figure of n = {}.png".format(len(us[0])-1), dpi=300)
+        fig.savefig("letra_b_figure of n = {}.png".format(len(us[0][0])-1), dpi=300)
 
 def main():
     
