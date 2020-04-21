@@ -63,7 +63,7 @@ def heat_equation(T, N, _f, lamb):
         if( (k+1) in list_times ):
             u_interval = np.append(u_interval, [u_old], axis = 0)
 
-    print(u_interval)
+    
         
     print('-'*15+'Heat Equation done'+'-'*15+'\n')
     return u_interval
