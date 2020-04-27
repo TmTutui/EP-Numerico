@@ -49,7 +49,7 @@ def heat_equation(u0, T, N, _f, lamb, g1, g2, _u):
 
     # u for every 0.1 units of time
     u_interval = np.array([u_old])
-    list_times = [i for i in range(0, M +1 ,M//10)]
+    list_times = [i for i in range(0, M + 1 ,M//10)]
     
     for k in tqdm(range(0, M)):
         # adicionar u(k+1,0) na u_new
@@ -167,7 +167,8 @@ def main():
     
     def _f(t, x):
         "Descrição da fonte de calor ao longo do tempo"
-        return np.exp(t-x)*5*(5*np.power(t,2)*np.cos(5*t*x) - (x + 2*t)*np.sin(5*t*x))
+        # return np.exp(t-x)*5*(5*np.power(t,2)*np.cos(5*t*x) - (x + 2*t)*np.sin(5*t*x))
+        return -np.exp(t-x)*(5*x*np.sin(5*t*x) - np.cos(5*t*x) + 10*t*np.sin(5*t*x) + (1-25*t*t)*np.cos(5*t*x) )
         
     T = 1
     
