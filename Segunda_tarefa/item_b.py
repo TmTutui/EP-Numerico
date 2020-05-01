@@ -12,6 +12,11 @@ current_path = current_path.split('/')
 current_path = current_path[:len(current_path) - 1]
 current_path = "/".join(current_path)
 
+def main():
+    part_a()
+    part_b()
+    part_c()
+
 def heat_equation(_u0, T, N, _f, lamb, _g1, _g2, _u):
     """
     Heat Equation:
@@ -169,7 +174,7 @@ def plot(us, _u, erro):
         print('--- AIX: saving fig at current directory ---')
         fig.savefig("letra_b_figure of n = {}.png".format(len(us[0][0])-1), dpi=300)
 
-def main():
+def part_a():
     T = 1
     
     def _f(t, x):

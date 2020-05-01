@@ -54,8 +54,9 @@ def transpose(A): # work for squace matrix
     return A_t
 
 def calculate_y(sub_L,b):
-    "Ly = b"
-    # Receive sub diagonal of L(list) and the column matrix b and return y
+    "Receive sub diagonal of L(list) and the column matrix b and return y"
+    # Ly = b
+
     y = np.array([b[0]])
     
     for i in range(len(b)-1):
@@ -64,8 +65,9 @@ def calculate_y(sub_L,b):
     return y
 
 def calculate_z(diag_D,y):
-    "Dz = y"
-    # Receive diagonal of D(list) and the column matrix y and return z
+    "Receive diagonal of D(list) and the column matrix y and return z"
+    # Dz = y
+
     z = np.array([])
     
     for i in range(len(y)):
@@ -74,8 +76,9 @@ def calculate_z(diag_D,y):
     return z
 
 def calculate_x(sub_L,z):
-    "L*(transposed)x = z"
-    # Receive super diagonal of L transposed(list) and the column matrix z and return x
+    "Receive super diagonal of L transposed(list) and the column matrix z and return x"
+    # L*(transposed)x = z"
+    
     x = np.zeros(len(z))
     x[len(x)-1] = z[len(z)-1]
     
