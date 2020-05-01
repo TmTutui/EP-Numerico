@@ -109,3 +109,65 @@ def teste4():
     x = calculate_x(sub_L,z)
 
     print(x)
+
+def plot(us, letter, part, _u=None, erro=None):
+    """
+    Plot a graph using matplotlib
+        us: array with heat_equation values (n=3)
+        _u: array - y_utarget
+        erro: list of floats
+    """ 
+    import matplotlib.pyplot as plt
+    import matplotlib as mpl
+    import sys
+    import os
+
+    # Save parameters
+    current_path = os.path.abspath(__file__)
+    current_path = current_path.split('/')
+    current_path = current_path[:len(current_path) - 1]
+    current_path = "/".join(current_path)
+
+    # Figure parameters
+    mpl.rcParams['lines.linewidth'] = 0.1
+    plt.rcParams["figure.figsize"] = (20,2.2)
+    
+    fig, axs = plt.subplots(1,11, gridspec_kw={ 'hspace' : 1.5, 'wspace': 0.47}, constrained_layout=True)
+    fig.suptitle('Plot para N = ' + str(len(us[0][0])-1))
+    plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
+    
+    x_us = np.arange(0,1.0000000000001,1/(len(us[0][0])-1))
+    us_dots = [2 for i in range(len(us[0][0]))] # list of dot sizes
+
+    # Valores da solução exata
+    x_utarget = np.arange(0,1,0.001)
+
+    if(_u != None):
+        y_target = np.array([_u(i) for i in x_utarget])
+        
+    target_dots = [0.2 for i in range(len(x_utarget))] # list of dot sizes
+    
+    # Plotting Graph
+    for i in range(11):
+        axs[i].scatter(x_us, us[0][i], s=us_dots, c='#80ab4e')
+        """ axs[0,i].set_xticks(np.arange(min(x_us), max(x_us)+1, 0.2)) """
+        axs[i].ticklabel_format(style='sci', axis='y', scilimits=(0,0))
+        axs.flat[i].yaxis.label.set_color('#80ab4e')
+
+    if(_u != None):
+        axs.flat[10].scatter(x_utarget, y_target, s=target_dots, alpha=0.1)
+
+    axs.flat[10].yaxis.set_label_position("right")
+    axs.flat[10].yaxis.label.set_color('black')
+    axs.flat[10].yaxis.label.set_fontsize(8)
+    if(erro != None):
+        axs.flat[10].set(ylabel="erro(T=1) = "+str(round(erro[0],10)))
+
+    # save image as png
+    if sys.platform.startswith('win32') or sys.platform.startswith('cygwin'):
+        fig.savefig(r"Segunda_tarefa\figuras_{}\Figure of n = {}, parte {}.png".format(letter,len(us[0][0])-1, part), dpi=300)
+    elif sys.platform.startswith('darwin') or sys.platform.startswith('linux'):
+        fig.savefig(current_path + "/figuras_{}" +"/Figure of n = {}, parte {}.png".format(letter,len(us[0][0])-1, part), dpi=300)
+    else:
+        print('--- AIX: saving fig at current directory ---')
+        fig.savefig("letra_{}_figure of n = {}, parte {}.png".format(letter,len(us[0][0])-1, part), dpi=300)

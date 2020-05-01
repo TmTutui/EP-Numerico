@@ -11,3 +11,4 @@ print(np.max([0,1,2,3,4,5.5,5,6])) """
 
 for i in range(11):
     u(i/10)
+

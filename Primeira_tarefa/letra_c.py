@@ -150,7 +150,6 @@ def main():
         
                 
     T = 1
-    lamb_list = np.array([0.25 , 0.5 , 0.51])
     
     try:
         N = int(input("Type N: "))
@@ -161,7 +160,7 @@ def main():
 
     us = []
     
-    for lamb in lamb_list:
+    for lamb in [0.25 , 0.5 , 0.51]:
         u_olds = heat_equation(T, N, _f, lamb)
         us.append(u_olds)
 
