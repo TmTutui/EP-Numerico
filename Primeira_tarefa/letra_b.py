@@ -53,13 +53,13 @@ def heat_equation(u0, T, N, _f, lamb, g1, g2, _u):
     
     for k in tqdm(range(0, M)):
         # adicionar u(k+1,0) na u_new
-        u_new = np.array([g1(k*dt)])
+        u_new = np.array([g1((k+1)*dt)])
 
         for i in range(1, N):
             u_new = np.append(u_new, u_old[i] + dt * ((u_old[i-1] - 2*u_old[i] + u_old[i+1]) / np.power(dx, 2) + _f(k*dt,i*dx)))
         
         # adicionar u(k+1,N) na u_new
-        u_new = np.append(u_new, g2(k*dt))
+        u_new = np.append(u_new, g2((k+1)*dt))
         
         u_old = u_new.copy()
 
@@ -194,5 +194,3 @@ def main():
     print('Erro: \n\n', erros, '\n\n')    
     plot(us, _u, erros)
     print("--- %s seconds ---"%round(time.time() - start_time, 4))
-
-main()

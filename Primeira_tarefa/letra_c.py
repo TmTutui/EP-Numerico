@@ -167,5 +167,3 @@ def main():
         
     plot(us)
     print("--- %s seconds ---"%round(time.time() - start_time, 4))
-
-main()

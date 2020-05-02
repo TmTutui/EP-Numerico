@@ -3,7 +3,7 @@ start_time = time.time()
 import numpy as np
 from tqdm import tqdm
 
-from item_a import plot, decompose_A, calculate_x, calculate_y, calculate_z
+from Segunda_tarefa.item_a import plot, decompose_A, calculate_x, calculate_y, calculate_z
 
 def main():
     try:

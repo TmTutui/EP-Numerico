@@ -67,8 +67,6 @@ def heat_equation(_u0, T, N, _f, lamb, g1, g2, _u):
     
     # calcular o erro
     erro = np.max(abs(y_utarget-u_old))
-
-    print(len(u_old),len(y_utarget))
         
     print('-'*15+'Heat Equation done'+'-'*15+'\n')
     return u_interval, erro   
@@ -190,5 +188,3 @@ def main():
     
     plot(us, _u, erros)
     print("--- %s seconds ---"%round(time.time() - start_time, 4))
-
-main()

@@ -1,3 +1,0 @@
-- [ ] Requiremetns.txt;
-- [ ] Readme.md;
-- [ ] Review equation letter C;
