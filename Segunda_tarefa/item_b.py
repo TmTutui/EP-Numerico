@@ -136,7 +136,6 @@ def part_a(N):
     erros.append(erro)
     
     plot(us, "b", "A", _u, erros)
-    print("--- %s seconds ---"%round(time.time() - start_time, 4))
 
 def part_b(N):
     
@@ -172,9 +171,8 @@ def part_b(N):
     
     erros.append(erro)
     
-    print('Erro: \n\n', erros, '\n\n')    
     plot(us, 'b', "B", _u, erros)
-    print("--- %s seconds ---"%round(time.time() - start_time, 4))
+
 
 def part_c(N):
     
@@ -215,6 +213,5 @@ def part_c(N):
 
         
     plot(us, 'b', "C")
-    print("--- %s seconds ---"%round(time.time() - start_time, 4))
 
 main()

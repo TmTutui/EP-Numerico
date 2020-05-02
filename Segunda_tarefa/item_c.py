@@ -69,8 +69,10 @@ def heat_equation(_u0, T, N, _f, _g1, _g2, _u=None):
 
         # create b 
         b = np.array([])
-        for i in range(1, N):
-            b = np.append(b, u_old[i] + (lamb/2)*(u_old[i-1] + 2*u_old[i] + u_old[i+1]) + (dt/2)*(_f(dt*(k+1),dx*i) + _f(dt*k,dx*i)))
+        b = np.append(b, u_old[1] + (lamb/2)*(_g1((k+1)*dt) + u_old[0] - 2*u_old[1] + u_old[2]) + (dt/2)*(_f(dt*(k+1),dx*1) + _f(dt*k,dx*1)))
+        for i in range(2, N-1):
+            b = np.append(b, u_old[i] + (lamb/2)*(u_old[i-1] - 2*u_old[i] + u_old[i+1]) + (dt/2)*(_f(dt*(k+1),dx*i) + _f(dt*k,dx*i)))
+        b = np.append(b, u_old[N-1] + (lamb/2)*(_g2((k+1)*dt) + u_old[N-2] - 2*u_old[N-1] + u_old[N]) + (dt/2)*(_f(dt*(k+1),dx*(N-1)) + _f(dt*k,dx*(N-1))))
 
         # find x
         y = calculate_y(sub_L,b)
@@ -135,7 +137,6 @@ def part_a(N):
     erros.append(erro)
     
     plot(us, "c", "A", _u, erros)
-    print("--- %s seconds ---"%round(time.time() - start_time, 4))
 
 
 def part_b(N):
@@ -172,9 +173,7 @@ def part_b(N):
     
     erros.append(erro)
     
-    print('Erro: \n\n', erros, '\n\n')    
     plot(us, "c", "B", _u, erros)
-    print("--- %s seconds ---"%round(time.time() - start_time, 4))
 
 
 def part_c(N):
@@ -216,6 +215,5 @@ def part_c(N):
 
         
     plot(us, 'c', "C")
-    print("--- %s seconds ---"%round(time.time() - start_time, 4))
 
 main()
