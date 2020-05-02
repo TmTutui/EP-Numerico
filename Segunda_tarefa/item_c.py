@@ -68,10 +68,9 @@ def heat_equation(_u0, T, N, _f, _g1, _g2, _u=None):
         u_new = np.array([_g1((k+1)*dt)])
 
         # create b 
-        b = np.array([u_old[0] + (lamb/2)*(u_old[0] + 2*u_old[1] + u_old[2]) + (dt/2)*(_f(dt*(k+1),dx*0) + _f(dt*k,dx*0)) + (lamb/2)*_g1(dt*(k+1))])
-        for i in range(2, N-1):
+        b = np.array([])
+        for i in range(1, N):
             b = np.append(b, u_old[i] + (lamb/2)*(u_old[i-1] + 2*u_old[i] + u_old[i+1]) + (dt/2)*(_f(dt*(k+1),dx*i) + _f(dt*k,dx*i)))
-        b = np.append(b, u_old[N-1] + (lamb/2)*(u_old[N-2] + 2*u_old[N-1] + u_old[N]) + (dt/2)*(_f(dt*(k+1),dx*(N-1)) + _f(dt*k,dx*(N-1))) + (lamb/2)*+_g2(dt*(k+1)))
 
         # find x
         y = calculate_y(sub_L,b)
@@ -83,7 +82,6 @@ def heat_equation(_u0, T, N, _f, _g1, _g2, _u=None):
         
         # adicionar u(k+1,N) na u_new
         u_new = np.append(u_new, _g2((k+1)*dt))
-        """ print(u_new) """
         
         u_old = u_new.copy()
         # print(u_old)
