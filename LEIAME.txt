@@ -22,12 +22,14 @@ __________________
 Python 3.5+
 Numpy == 1.18.2
 Matplotlib == 3.2.1
+tqdm == 4.45.0
 ```
 
 #### Instalação
 ```
-$pip install numpy
-$pip install matplotlib
+$ pip install numpy
+$ pip install matplotlib
+$ pip install tqdm
 ```
 ## Running
 Estando na pasta raiz do projeto:
