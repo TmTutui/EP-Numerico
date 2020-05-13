@@ -8,15 +8,15 @@ def main():
         alternative = input("Type an alternative (a,b ou c):")
         if(alternative.lower() == "a"):      
             from Primeira_tarefa import letra_a
-            letra_a.main()
+            letra_a
 
         elif(alternative.lower() == "b"):
             from Primeira_tarefa import letra_b
-            letra_b.main()
-
+            letra_b
+            
         elif(alternative.lower() == "c"):
             from Primeira_tarefa import letra_c
-            letra_c.main()
+            letra_c
             
         else:
             print("Não existe esse item, tente novamente!")

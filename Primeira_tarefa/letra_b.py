@@ -84,14 +84,14 @@ def plot(us, _u, erro):
     import matplotlib.pyplot as plt
     import matplotlib as mpl
     mpl.rcParams['lines.linewidth'] = 0.1
-    plt.rcParams["figure.figsize"] = (40,5)
+    plt.rcParams["figure.figsize"] = (30,15)
     
     fig, axs = plt.subplots(3,11, gridspec_kw={ 'hspace' : 0.45, 'wspace': 0.47})
     fig.suptitle('Plot para N = ' + str(len(us[0][0])-1))
     plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
     
     x_us = np.arange(0,1.0000000000001,1/(len(us[0][0])-1))
-    us_dots = [2 for i in range(len(us[0][0]))] # list of dot sizes
+    us_dots = [8 for i in range(len(us[0][0]))] # list of dot sizes
 
     # Valores da solução exata
     x_utarget = np.arange(0,1,0.001)
@@ -101,21 +101,21 @@ def plot(us, _u, erro):
     
 
     for i in range(11):
-        axs[0,i].scatter(x_us, us[0][i], s=us_dots, c='#80ab4e')
+        axs[0,i].scatter(x_us, us[0][i], s=us_dots, c='#119822')
         """ axs[0,i].set_xticks(np.arange(min(x_us), max(x_us)+1, 0.2)) """
         axs[0,i].ticklabel_format(style='sci', axis='y', scilimits=(0,0))
-        axs.flat[i].yaxis.label.set_color('#80ab4e')
+        axs.flat[i].yaxis.label.set_color('#119822')
 
         axs[1,i].scatter(x_us, us[1][i], s=us_dots, c='#FF8C00')
         """ axs[1,i].set_xticks(np.arange(min(x_us), max(x_us)+1, 0.2)) """
         axs[1,i].ticklabel_format(style='sci', axis='y', scilimits=(0,0))
         axs.flat[i + 11].yaxis.label.set_color('#FF8C00')
 
-        axs[2,i].scatter(x_us, us[2][i], s=us_dots, c='red')
+        axs[2,i].scatter(x_us, us[2][i], s=us_dots, c='#EC0B43')
         """ axs[2,i].set_xticks(np.arange(min(x_us), max(x_us)+1, 0.2)) """
         axs[2,i].ticklabel_format(style='sci', axis='y', scilimits=(0,0))
         axs.flat[i + 22].set(xlabel='tempo = ' + str(i/10))
-        axs.flat[i + 22].yaxis.label.set_color('red')
+        axs.flat[i + 22].yaxis.label.set_color('#EC0B43')
 
 
     axs.flat[0].set(ylabel='Lambda = 0.25')
@@ -129,17 +129,17 @@ def plot(us, _u, erro):
 
     axs.flat[10].yaxis.set_label_position("right")
     axs.flat[10].yaxis.label.set_color('black')
-    axs.flat[10].yaxis.label.set_fontsize(6)
+    axs.flat[10].yaxis.label.set_fontsize(17)
     axs.flat[10].set(ylabel="erro(T=1) = "+str(round(erro[0],10)))
     
     axs.flat[21].yaxis.set_label_position("right")
     axs.flat[21].yaxis.label.set_color('black')
-    axs.flat[21].yaxis.label.set_fontsize(6)
+    axs.flat[21].yaxis.label.set_fontsize(17)
     axs.flat[21].set(ylabel="erro(T=1) = "+str(round(erro[1],10)))
 
     axs.flat[32].yaxis.set_label_position("right")
     axs.flat[32].yaxis.label.set_color('black')
-    axs.flat[32].yaxis.label.set_fontsize(6)
+    axs.flat[32].yaxis.label.set_fontsize(17)
     axs.flat[32].set(ylabel="erro(T=1) = "+str(round(erro[2],10)))
 
     # save image as png
@@ -194,3 +194,5 @@ def main():
     print('Erro: \n\n', erros, '\n\n')    
     plot(us, _u, erros)
     print("--- %s seconds ---"%round(time.time() - start_time, 4))
+
+main()

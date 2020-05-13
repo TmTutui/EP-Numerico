@@ -137,7 +137,7 @@ def plot(us, letter, part, _u=None, erro=None):
     plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
     
     x_us = np.arange(0,1.0000000000001,1/(len(us[0][0])-1))
-    us_dots = [2 for i in range(len(us[0][0]))] # list of dot sizes
+    us_dots = [8 for i in range(len(us[0][0]))] # list of dot sizes
 
     # Valores da solução exata
     x_utarget = np.arange(0,1,0.001)
@@ -149,17 +149,17 @@ def plot(us, letter, part, _u=None, erro=None):
     
     # Plotting Graph
     for i in range(11):
-        axs[i].scatter(x_us, us[0][i], s=us_dots, c='#80ab4e')
+        axs[i].scatter(x_us, us[0][i], s=us_dots, c='#119822')
         """ axs[0,i].set_xticks(np.arange(min(x_us), max(x_us)+1, 0.2)) """
         axs[i].ticklabel_format(style='sci', axis='y', scilimits=(0,0))
-        axs.flat[i].yaxis.label.set_color('#80ab4e')
+        axs.flat[i].yaxis.label.set_color('#119822')
 
     if(_u != None):
         axs.flat[10].scatter(x_utarget, y_target, s=target_dots, alpha=0.1)
 
     axs.flat[10].yaxis.set_label_position("right")
     axs.flat[10].yaxis.label.set_color('black')
-    axs.flat[10].yaxis.label.set_fontsize(8)
+    axs.flat[10].yaxis.label.set_fontsize(9)
     if(erro != None):
         axs.flat[10].set(ylabel="erro(T=1) = "+str(round(erro[0],10)))
 
