@@ -11,11 +11,13 @@ def Task01(N, pontos, k):
     nf = len(pontos)
     
     def _u0(x):
-        ""
+        "Initial distribution"
         return 0
     def _g1(t):
+        "Distribution on x = 0"
         return 0
     def _g2(t):
+        "Distribution on x =N"
         return 0
     def r(t):
         return 10*(1 + np.cos(5*t))
