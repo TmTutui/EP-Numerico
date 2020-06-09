@@ -1,4 +1,6 @@
+#!/usr/bin/env python3
 import os
+
 import numpy as np
 from tqdm import tqdm
 
@@ -96,7 +98,7 @@ def Task01(N, pontos, k):
     uk_T = heat_equation(_u0, _f, _g1, _g2)
     return uk_T[1,len(uk_T)-2]
 
-def Task02(uT, us):
+def Task02(uT, uks):
 
     """Item b do exercício
         uT: 
@@ -110,8 +112,23 @@ def Task02(uT, us):
         """
         return sum(vetor1[:]*vetor2[:])
     
-    def _matriz(us):
-        """"""
-    
+    def _matriz(uks):
+        """
+        uks: 2D numpy array 
+        """
+        A = np.array([]) # 2D matrix with dot product of uks
+        b = np.array([]) # right hand side 1D matrix
+        
+        for k1 in range(len(uks)):
+            np.append(A, [_inner_product(uks[k2], uks[k1]) for k2 in range(len(uks))])
+            np.append(b, _inner_product(uT, uks[k1]))
+
+        # [ ] TODO: ver se não tem que adicionar vetor x ao cálculo do sistem normal
+        return A, b
+        
+        for k1 in range(len(uks)):
+            for k2 in range(len(uks)):
+                np.append(A, _inner_product(uks[k1], uks[k2]))
+
                    
     
