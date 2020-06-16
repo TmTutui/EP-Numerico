@@ -122,15 +122,59 @@ def Task02(uT, uks):
         b = np.array([]) # right hand side 1D matrix
         
         for k1 in range(len(uks)):
-            np.append(A, [_inner_product(uks[k2], uks[k1]) for k2 in range(len(uks))])
-            np.append(b, _inner_product(uT, uks[k1]))
+            A = np.append(A, [_inner_product(uks[k2], uks[k1]) for k2 in range(len(uks))])
+            b = np.append(b, _inner_product(uT, uks[k1]))
 
         # [ ] TODO: ver se não tem que adicionar vetor x ao cálculo do sistem normal
         return A, b
         
         for k1 in range(len(uks)):
             for k2 in range(len(uks)):
-                np.append(A, _inner_product(uks[k1], uks[k2]))
+                A = np.append(A, _inner_product(uks[k1], uks[k2]))
 
-                   
+def Task03(M_sim):
+    def find_D_and_L(M_sim):
+        D = np.array([])
+        
+        m_dimension = len(M_sim)
+        L = np.array([np.zeros(m_dimension)])
+        L[0,0] = 1
+        
+        for i in range(1,m_dimension):
+            L = np.append(L, [np.zeros(m_dimension)], axis=0)
+            L[i,i] = 1
+
+        for line in range(m_dimension):
+            for column in range(m_dimension):
+                if(line >= column):
+                    if(line==column):
+                        sum = 0
+                        for n in range(line):
+                            sum+=D[n]*np.square(L[line][n])
+                        D = np.append(D, M_sim[line][column] - sum)
+                    
+                    else:
+                        sum = 0
+                        for n in range(column):
+                            sum+= L[line][n]*L[column][n]*D[n]
+                        L[line,column] = (M_sim[line][column] - sum)/D[column]
+        
+        return D, L
+
+    def Teste():
+        m_tst = [
+            [4,12,-16],
+            [12,37,-43],
+            [-16,-43,98]
+        ]
     
+        D,L = find_D_and_L(m_tst)
+
+        print(D)
+        print(L)
+
+    Teste()
+                
+
+
+Task03([0,0,0])
