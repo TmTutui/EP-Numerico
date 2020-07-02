@@ -4,7 +4,7 @@ import os
 import numpy as np
 from tqdm import tqdm
 
-from Segunda_tarefa.item_a import plot, decompose_A, calculate_x, calculate_y, calculate_z
+from EP2.funcoes_ep01 import plot, decompose_A, calculate_x, calculate_y, calculate_z
 
 def Task01(N, pontos, k):
     " Calcula uk(T,x)"
@@ -17,7 +17,7 @@ def Task01(N, pontos, k):
         "Distribution on x = 0"
         return 0
     def _g2(t):
-        "Distribution on x =N"
+        "Distribution on x = N"
         return 0
     def r(t):
         return 10*(1 + np.cos(5*t))
@@ -173,8 +173,14 @@ def Task03(M_sim):
         print(D)
         print(L)
 
-    Teste()
-                
+    return find_D_and_L(M_sim)
 
-
-Task03([0,0,0])
+def Testes():
+    
+    T = 1
+    
+    def r(t):
+        "r usada em todos os itens de teste"
+        return 10*(1 + np.cos(t*t))
+    
+    

@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 def main():
-    escolhido = False
     
     tarefa = int(input("Digite a tarefa (1 ou 2): "))
     
